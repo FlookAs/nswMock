@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import {
     Search,
@@ -54,13 +55,6 @@ const TaxIdLookup = () => {
 
         const rawTaxId = getRawTaxId();
 
-        // ตรวจสอบความถูกต้องของรหัสนิติบุคคล
-        // const validation = apiService.validateTaxId(rawTaxId);
-        // if (!validation.valid) {
-        //   setValidationError(validation.message);
-        //   return;
-        // }
-
         setLoading(true);
         setError('');
         setResult(null);
@@ -103,7 +97,7 @@ const TaxIdLookup = () => {
     const handleTaxIdChange = (e) => {
         const formatted = formatTaxId(e.target.value);
         setTaxId(formatted);
-        setValidationError(''); // ลบ validation error เมื่อพิมพ์ใหม่
+        setValidationError('');
     };
 
     const getRawTaxId = () => {
@@ -221,9 +215,8 @@ const TaxIdLookup = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
                                     {[
                                         { id: '012-34-56789-12-3', desc: '200 OK' },
-                                        { id: '987-65-43210-98-7', desc: 'บริษัทมหาชน' },
-                                        { id: '111-11-11111-11-1', desc: 'ปิดกิจการ' },
-                                        { id: '555-55-55555-55-5', desc: 'สตาร์ทอัพ' }
+                                        { id: '999-99-99999-99-9', desc: '400 Error' },
+                                        { id: '888-88-88888-88-8', desc: '401 Error' },
                                     ].map((item) => (
                                         <button
                                             key={item.id}
@@ -242,7 +235,8 @@ const TaxIdLookup = () => {
                             <button
                                 onClick={handleSubmit}
                                 disabled={loading || getRawTaxId().length < 13}
-                                className="flex-1 bg-indigo-600 text-white py-3 px-6 rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center font-medium"
+                                className="flex-1 text-white py-3 px-6 rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center font-medium"
+                                style={{ backgroundColor: '#FFB600' }}
                             >
                                 {loading ? (
                                     <>
@@ -277,12 +271,19 @@ const TaxIdLookup = () => {
                     </div>
                 )}
 
-                {/* Success Result */}
+                {/* API Response Result (Success or Fail) */}
                 {result && (
                     <div className="bg-white rounded-lg shadow-lg p-6">
+                        {/* Header สำหรับทั้ง Success และ Fail */}
                         <div className="flex items-center mb-6">
-                            <CheckCircle className="w-6 h-6 text-green-500 mr-3" />
-                            <h3 className="text-2xl font-semibold text-gray-900">ข้อมูลบริษัท</h3>
+                            {result.status === 'SUCCESS' ? (
+                                <CheckCircle className="w-6 h-6 text-green-500 mr-3" />
+                            ) : (
+                                <AlertCircle className="w-6 h-6 text-red-500 mr-3" />
+                            )}
+                            <h3 className="text-2xl font-semibold text-gray-900">
+                                {result.status === 'SUCCESS' ? 'ข้อมูลบริษัท' : 'ผลการค้นหา'}
+                            </h3>
                             {result.isMockData && (
                                 <span className="ml-auto px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium">
                                     🧪 Mock Data
@@ -290,261 +291,389 @@ const TaxIdLookup = () => {
                             )}
                             <span className={`ml-2 px-3 py-1 rounded-full text-sm font-medium ${result.status === 'SUCCESS'
                                     ? 'bg-green-100 text-green-800'
-                                    : 'bg-yellow-100 text-yellow-800'
+                                    : 'bg-red-100 text-red-800'
                                 }`}>
-                                {result.status === 'SUCCESS' ? '✅ สำเร็จ' : '⚠️ ' + result.status}
+                                {result.status === 'SUCCESS' ? '✅ สำเร็จ' : '❌ ไม่สำเร็จ'}
                             </span>
                         </div>
 
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                            {/* ข้อมูลหลัก */}
-                            <div className="space-y-6">
-                                <div>
-                                    <label className="text-sm font-medium text-gray-500 flex items-center">
-                                        <Building className="w-4 h-4 mr-1" />
-                                        รหัสนิติบุคคล
-                                    </label>
-                                    <div className="flex items-center mt-1">
-                                        <p className="text-lg font-mono text-gray-900">{result.data.taxNumber}</p>
-                                        <CopyButton text={result.data.taxNumber} fieldName="taxNumber" />
-                                    </div>
-                                    {result.data.branch && result.data.branch > 0 && (
-                                        <p className="text-sm text-gray-500">สาขาที่ {result.data.branch}</p>
-                                    )}
-                                </div>
-
-                                <div>
-                                    <label className="text-sm font-medium text-gray-500">ชื่อบริษัท (ไทย)</label>
-                                    <div className="flex items-center mt-1">
-                                        <p className="text-lg text-gray-900">
-                                            {result.data.title && `${result.data.title} `}{result.data.name}
-                                        </p>
-                                        <CopyButton text={`${result.data.title || ''} ${result.data.name}`} fieldName="companyName" />
-                                    </div>
-                                </div>
-
-                                {result.data.nameEnglish && (
-                                    <div>
-                                        <label className="text-sm font-medium text-gray-500">ชื่อบริษัท (อังกฤษ)</label>
-                                        <div className="flex items-center mt-1">
-                                            <p className="text-gray-900">{result.data.nameEnglish}</p>
-                                            <CopyButton text={result.data.nameEnglish} fieldName="companyNameEn" />
-                                        </div>
-                                    </div>
-                                )}
-
-                                <div>
-                                    <label className="text-sm font-medium text-gray-500 flex items-center">
-                                        <Calendar className="w-4 h-4 mr-1" />
-                                        วันที่จดทะเบียน
-                                    </label>
-                                    <p className="text-gray-900 mt-1">
-                                        {result.data.incorporationDate
-                                            ? new Date(result.data.incorporationDate.toString().replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')).toLocaleDateString('th-TH', {
-                                                year: 'numeric',
-                                                month: 'long',
-                                                day: 'numeric'
-                                            })
-                                            : 'ไม่ระบุ'}
-                                    </p>
-                                </div>
-
-                                <div>
-                                    <label className="text-sm font-medium text-gray-500 flex items-center">
-                                        <DollarSign className="w-4 h-4 mr-1" />
-                                        ทุนจดทะเบียน
-                                    </label>
-                                    <p className="text-gray-900 mt-1 text-lg font-semibold">
-                                        {result.data.capitalAmount
-                                            ? `${parseInt(result.data.capitalAmount).toLocaleString()} บาท`
-                                            : 'ไม่ระบุ'}
-                                    </p>
-                                </div>
-
-                                {/* ข้อมูลการติดต่อ */}
-                                <div className="border-t pt-4">
-                                    <h4 className="font-medium text-gray-900 mb-3">ข้อมูลการติดต่อ</h4>
-
-                                    {result.data.phone && (
-                                        <div className="mb-3">
-                                            <label className="text-sm font-medium text-gray-500 flex items-center">
-                                                <Phone className="w-4 h-4 mr-1" />
-                                                หมายเลขโทรศัพท์
-                                            </label>
-                                            <div className="flex items-center mt-1">
-                                                <a
-                                                    href={`tel:${result.data.phone}`}
-                                                    className="text-indigo-600 hover:text-indigo-800 transition-colors"
-                                                >
-                                                    {result.data.phone}
-                                                </a>
-                                                <CopyButton text={result.data.phone} fieldName="phone" />
+                        {/* แสดง Error Details สำหรับ status FAIL */}
+                        {result.status === 'FAIL' && result.error && (
+                            <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
+                                <div className="flex items-start">
+                                    <AlertCircle className="w-5 h-5 text-red-500 mr-3 flex-shrink-0 mt-0.5" />
+                                    <div className="flex-1">
+                                        <h4 className="text-lg font-semibold text-red-800 mb-2">
+                                            {result.error.title || 'เกิดข้อผิดพลาด'}
+                                        </h4>
+                                        
+                                        <div className="space-y-3 text-sm">
+                                            <div>
+                                                <span className="font-medium text-red-700">ข้อความ (ไทย):</span>
+                                                <p className="text-red-600 mt-1">{result.messageTH || 'ทำรายการไม่สำเร็จ'}</p>
                                             </div>
-                                        </div>
-                                    )}
-
-                                    {result.data.fax && (
-                                        <div className="mb-3">
-                                            <label className="text-sm font-medium text-gray-500">หมายเลขโทรสาร</label>
-                                            <div className="flex items-center mt-1">
-                                                <p className="text-gray-900">{result.data.fax}</p>
-                                                <CopyButton text={result.data.fax} fieldName="fax" />
+                                            
+                                            <div>
+                                                <span className="font-medium text-red-700">ข้อความ (English):</span>
+                                                <p className="text-red-600 mt-1">{result.messageEN || 'Transaction Failed'}</p>
                                             </div>
-                                        </div>
-                                    )}
 
-                                    {result.data.email && (
-                                        <div>
-                                            <label className="text-sm font-medium text-gray-500 flex items-center">
-                                                <Globe className="w-4 h-4 mr-1" />
-                                                อีเมล
-                                            </label>
-                                            <div className="flex items-center mt-1">
-                                                <a
-                                                    href={`mailto:${result.data.email}`}
-                                                    className="text-indigo-600 hover:text-indigo-800 transition-colors"
-                                                >
-                                                    {result.data.email}
-                                                </a>
-                                                <CopyButton text={result.data.email} fieldName="email" />
+                                            {result.error.detail && (
+                                                <div>
+                                                    <span className="font-medium text-red-700">รายละเอียด:</span>
+                                                    <p className="text-red-600 mt-1">{result.error.detail}</p>
+                                                </div>
+                                            )}
+
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t border-red-200">
+                                                <div>
+                                                    <span className="font-medium text-red-700">HTTP Status:</span>
+                                                    <p className="text-red-600">{result.error.status}</p>
+                                                </div>
+                                                <div>
+                                                    <span className="font-medium text-red-700">Error Type:</span>
+                                                    <p className="text-red-600 font-mono text-xs">{result.error.type}</p>
+                                                </div>
+                                                <div>
+                                                    <span className="font-medium text-red-700">Service:</span>
+                                                    <p className="text-red-600 font-mono text-xs">{result.error.service}</p>
+                                                </div>
+                                                <div>
+                                                    <span className="font-medium text-red-700">Provider:</span>
+                                                    <p className="text-red-600">{result.error.providers}</p>
+                                                </div>
                                             </div>
+
+                                            {/* Raw Response Details */}
+                                            {result.error.rawResponse && (
+                                                <details className="mt-4">
+                                                    <summary className="cursor-pointer font-medium text-red-700 hover:text-red-800">
+                                                        รายละเอียดเทคนิค (คลิกเพื่อดู)
+                                                    </summary>
+                                                    <div className="mt-2 p-3 bg-red-100 rounded border border-red-200">
+                                                        <pre className="text-xs text-red-700 whitespace-pre-wrap overflow-x-auto">
+                                                            {JSON.stringify(result.error.rawResponse, null, 2)}
+                                                        </pre>
+                                                    </div>
+                                                </details>
+                                            )}
                                         </div>
-                                    )}
+
+                                        {/* Suggested Actions */}
+                                        <div className="mt-4 p-4 bg-red-100 rounded-lg border border-red-200">
+                                            <h5 className="font-medium text-red-800 mb-2">💡 คำแนะนำในการแก้ไข:</h5>
+                                            <ul className="text-sm text-red-700 space-y-1">
+                                                {result.error.status === 400 && (
+                                                    <>
+                                                        <li>• ตรวจสอบว่ารหัสนิติบุคคลถูกต้องและมีอยู่จริงในระบบ</li>
+                                                        <li>• ลองใช้รหัสนิติบุคคลตัวอย่างที่ให้ไว้</li>
+                                                        <li>• ตรวจสอบรูปแบบรหัสนิติบุคคล (ต้องเป็น 13 หลัก)</li>
+                                                    </>
+                                                )}
+                                                {result.error.status === 401 && (
+                                                    <>
+                                                        <li>• ตรวจสอบ API Key ในไฟล์ .env</li>
+                                                        <li>• ติดต่อผู้ดูแลระบบเพื่อขอสิทธิ์การเข้าใช้งาน</li>
+                                                        <li>• ตรวจสอบว่า Token ยังไม่หมดอายุ</li>
+                                                    </>
+                                                )}
+                                                <li>• หากปัญหายังคงอยู่ กรุณาติดต่อทีมสนับสนุน</li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                        )}
 
-                            {/* ข้อมูลเพิ่มเติม */}
-                            <div className="space-y-6">
+                        {/* Transaction Info Footer สำหรับทั้ง Success และ Fail */}
+                        <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+                            <h4 className="font-medium text-gray-900 mb-3">ข้อมูลการทำรายการ</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                                 <div>
-                                    <label className="text-sm font-medium text-gray-500">สถานะ</label>
-                                    <div className="mt-1">
-                                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${result.data.penalty === 'N'
-                                                ? 'bg-green-100 text-green-800'
-                                                : 'bg-red-100 text-red-800'
-                                            }`}>
-                                            <div className={`w-2 h-2 rounded-full mr-2 ${result.data.penalty === 'N' ? 'bg-green-500' : 'bg-red-500'
-                                                }`}></div>
-                                            {result.data.penalty === 'N' ? 'ปกติ' : 'มีโทษ'}
-                                        </span>
+                                    <span className="font-medium text-gray-700">Transaction ID:</span>
+                                    <div className="flex items-center mt-1">
+                                        <code className="text-gray-600 bg-gray-100 px-2 py-1 rounded text-xs">
+                                            {result.transactionId || 'N/A'}
+                                        </code>
+                                        {result.transactionId && <CopyButton text={result.transactionId} fieldName="transactionId" />}
                                     </div>
                                 </div>
-
                                 <div>
-                                    <label className="text-sm font-medium text-gray-500">ประเภทธุรกิจ</label>
-                                    <p className="text-gray-900 mt-1">
-                                        {result.data.personalType === '1' ? 'นิติบุคคล' : 'บุคคลธรรมดา'}
+                                    <span className="font-medium text-gray-700">เวลาที่ทำรายการ:</span>
+                                    <p className="text-gray-600 mt-1">
+                                        {new Date(result.timestamp || new Date()).toLocaleString('th-TH', {
+                                            year: 'numeric',
+                                            month: '2-digit',
+                                            day: '2-digit',
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                            second: '2-digit'
+                                        })}
                                     </p>
                                 </div>
-
-                                {result.data.countryBase && (
+                                <div>
+                                    <span className="font-medium text-gray-700">Environment:</span>
+                                    <p className="text-gray-600 mt-1">
+                                        {result.environment || import.meta.env.VITE_APP_ENV}
+                                        {result.isMockData && <span className="text-orange-600 ml-2">🧪</span>}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        {/* แสดงข้อมูลบริษัทเฉพาะกรณี SUCCESS */}
+                        {result.status === 'SUCCESS' && result.data && (
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                {/* ข้อมูลหลัก */}
+                                <div className="space-y-6">
                                     <div>
-                                        <label className="text-sm font-medium text-gray-500">ประเทศที่จดทะเบียน</label>
+                                        <label className="text-sm font-medium text-gray-500 flex items-center">
+                                            <Building className="w-4 h-4 mr-1" />
+                                            รหัสนิติบุคคล
+                                        </label>
+                                        <div className="flex items-center mt-1">
+                                            <p className="text-lg font-mono text-gray-900">{result.data.taxNumber}</p>
+                                            <CopyButton text={result.data.taxNumber} fieldName="taxNumber" />
+                                        </div>
+                                        {result.data.branch && result.data.branch > 0 && (
+                                            <p className="text-sm text-gray-500">สาขาที่ {result.data.branch}</p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <label className="text-sm font-medium text-gray-500">ชื่อบริษัท (ไทย)</label>
+                                        <div className="flex items-center mt-1">
+                                            <p className="text-lg text-gray-900">
+                                                {result.data.title && `${result.data.title} `}{result.data.name}
+                                            </p>
+                                            <CopyButton text={`${result.data.title || ''} ${result.data.name}`} fieldName="companyName" />
+                                        </div>
+                                    </div>
+
+                                    {result.data.nameEnglish && (
+                                        <div>
+                                            <label className="text-sm font-medium text-gray-500">ชื่อบริษัท (อังกฤษ)</label>
+                                            <div className="flex items-center mt-1">
+                                                <p className="text-gray-900">{result.data.nameEnglish}</p>
+                                                <CopyButton text={result.data.nameEnglish} fieldName="companyNameEn" />
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <div>
+                                        <label className="text-sm font-medium text-gray-500 flex items-center">
+                                            <Calendar className="w-4 h-4 mr-1" />
+                                            วันที่จดทะเบียน
+                                        </label>
                                         <p className="text-gray-900 mt-1">
-                                            {result.data.countryBase === 'TH' ? 'ประเทศไทย' : result.data.countryBase}
+                                            {result.data.incorporationDate
+                                                ? new Date(result.data.incorporationDate.toString().replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')).toLocaleDateString('th-TH', {
+                                                    year: 'numeric',
+                                                    month: 'long',
+                                                    day: 'numeric'
+                                                })
+                                                : 'ไม่ระบุ'}
                                         </p>
                                     </div>
-                                )}
 
-                                {/* ข้อมูลกรรมการ */}
-                                {result.data.customsRegisterDirectorInfo && (
-                                    <div className="border-t pt-4">
-                                        <h4 className="font-medium text-gray-900 mb-3 flex items-center">
-                                            <User className="w-4 h-4 mr-1" />
-                                            ข้อมูลกรรมการ
-                                        </h4>
-                                        <div className="bg-gray-50 p-3 rounded-lg">
-                                            <div className="flex items-center">
-                                                <p className="text-gray-900 font-medium">
-                                                    {result.data.customsRegisterDirectorInfo.preNameDesc} {result.data.customsRegisterDirectorInfo.firstName} {result.data.customsRegisterDirectorInfo.lastName}
-                                                </p>
-                                                <CopyButton
-                                                    text={`${result.data.customsRegisterDirectorInfo.preNameDesc} ${result.data.customsRegisterDirectorInfo.firstName} ${result.data.customsRegisterDirectorInfo.lastName}`}
-                                                    fieldName="director"
-                                                />
-                                            </div>
-                                            {result.data.customsRegisterDirectorInfo.firstNameEnglish && (
-                                                <p className="text-gray-600 text-sm mt-1">
-                                                    {result.data.customsRegisterDirectorInfo.firstNameEnglish} {result.data.customsRegisterDirectorInfo.lastNameEnglish}
-                                                </p>
-                                            )}
-                                            {result.data.customsRegisterDirectorInfo.email && (
-                                                <p className="text-gray-600 text-sm">
-                                                    📧 {result.data.customsRegisterDirectorInfo.email}
-                                                </p>
-                                            )}
-                                            {result.data.customsRegisterDirectorInfo.phone && (
-                                                <p className="text-gray-600 text-sm">
-                                                    📞 {result.data.customsRegisterDirectorInfo.phone}
-                                                </p>
-                                            )}
-                                        </div>
+                                    <div>
+                                        <label className="text-sm font-medium text-gray-500 flex items-center">
+                                            <DollarSign className="w-4 h-4 mr-1" />
+                                            ทุนจดทะเบียน
+                                        </label>
+                                        <p className="text-gray-900 mt-1 text-lg font-semibold">
+                                            {result.data.capitalAmount
+                                                ? `${parseInt(result.data.capitalAmount).toLocaleString()} บาท`
+                                                : 'ไม่ระบุ'}
+                                        </p>
                                     </div>
-                                )}
 
-                                {/* ข้อมูลสถานะการลงทะเบียน */}
-                                <div className="border-t pt-4">
-                                    <h4 className="font-medium text-gray-900 mb-3">สถานะการลงทะเบียน</h4>
-                                    <div className="space-y-2 text-sm">
-                                        <div className="flex justify-between">
-                                            <span className="text-gray-500">วันที่ลงทะเบียน:</span>
-                                            <span className="text-gray-900">
-                                                {result.data.registerDate
-                                                    ? new Date(result.data.registerDate.toString().replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')).toLocaleDateString('th-TH')
-                                                    : 'ไม่ระบุ'}
-                                            </span>
-                                        </div>
-                                        {result.data.dateAmend && (
-                                            <div className="flex justify-between">
-                                                <span className="text-gray-500">วันที่แก้ไขล่าสุด:</span>
-                                                <span className="text-gray-900">
-                                                    {new Date(result.data.dateAmend.toString().replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')).toLocaleDateString('th-TH')}
-                                                </span>
+                                    {/* ข้อมูลการติดต่อ */}
+                                    <div className="border-t pt-4">
+                                        <h4 className="font-medium text-gray-900 mb-3">ข้อมูลการติดต่อ</h4>
+
+                                        {result.data.phone && (
+                                            <div className="mb-3">
+                                                <label className="text-sm font-medium text-gray-500 flex items-center">
+                                                    <Phone className="w-4 h-4 mr-1" />
+                                                    หมายเลขโทรศัพท์
+                                                </label>
+                                                <div className="flex items-center mt-1">
+                                                    <a
+                                                        href={`tel:${result.data.phone}`}
+                                                        className="text-indigo-600 hover:text-indigo-800 transition-colors"
+                                                    >
+                                                        {result.data.phone}
+                                                    </a>
+                                                    <CopyButton text={result.data.phone} fieldName="phone" />
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {result.data.fax && (
+                                            <div className="mb-3">
+                                                <label className="text-sm font-medium text-gray-500">หมายเลขโทรสาร</label>
+                                                <div className="flex items-center mt-1">
+                                                    <p className="text-gray-900">{result.data.fax}</p>
+                                                    <CopyButton text={result.data.fax} fieldName="fax" />
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {result.data.email && (
+                                            <div>
+                                                <label className="text-sm font-medium text-gray-500 flex items-center">
+                                                    <Globe className="w-4 h-4 mr-1" />
+                                                    อีเมล
+                                                </label>
+                                                <div className="flex items-center mt-1">
+                                                    <a
+                                                        href={`mailto:${result.data.email}`}
+                                                        className="text-indigo-600 hover:text-indigo-800 transition-colors"
+                                                    >
+                                                        {result.data.email}
+                                                    </a>
+                                                    <CopyButton text={result.data.email} fieldName="email" />
+                                                </div>
                                             </div>
                                         )}
                                     </div>
                                 </div>
-                            </div>
-                        </div>
 
-                        {/* ที่อยู่ */}
-                        <div className="mt-6 pt-6 border-t border-gray-200">
-                            <label className="text-sm font-medium text-gray-500 flex items-center mb-2">
-                                <MapPin className="w-4 h-4 mr-1" />
-                                ที่อยู่
-                            </label>
-                            <div className="flex items-start">
-                                <p className="text-gray-900 text-sm leading-relaxed flex-1">
-                                    {[
-                                        result.data.houseNumber,
-                                        result.data.buildingName && `อาคาร${result.data.buildingName}`,
-                                        result.data.mooNumber && `หมู่ ${result.data.mooNumber}`,
-                                        result.data.soiNumber && `ซอย ${result.data.soiNumber}`,
-                                        result.data.streetName && `ถนน ${result.data.streetName}`,
-                                        result.data.tumbolName && `ตำบล ${result.data.tumbolName}`,
-                                        result.data.amphurName && `อำเภอ ${result.data.amphurName}`,
-                                        result.data.provinceName,
-                                        result.data.postCode
-                                    ].filter(Boolean).join(' ')}
-                                </p>
-                                <CopyButton
-                                    text={[
-                                        result.data.houseNumber,
-                                        result.data.buildingName && `อาคาร${result.data.buildingName}`,
-                                        result.data.mooNumber && `หมู่ ${result.data.mooNumber}`,
-                                        result.data.soiNumber && `ซอย ${result.data.soiNumber}`,
-                                        result.data.streetName && `ถนน ${result.data.streetName}`,
-                                        result.data.tumbolName && `ตำบล ${result.data.tumbolName}`,
-                                        result.data.amphurName && `อำเภอ ${result.data.amphurName}`,
-                                        result.data.provinceName,
-                                        result.data.postCode
-                                    ].filter(Boolean).join(' ')}
-                                    fieldName="address"
-                                />
-                            </div>
-                        </div>
+                                {/* ข้อมูลเพิ่มเติม */}
+                                <div className="space-y-6">
+                                    <div>
+                                        <label className="text-sm font-medium text-gray-500">สถานะ</label>
+                                        <div className="mt-1">
+                                            <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${result.data.penalty === 'N'
+                                                    ? 'bg-green-100 text-green-800'
+                                                    : 'bg-red-100 text-red-800'
+                                                }`}>
+                                                <div className={`w-2 h-2 rounded-full mr-2 ${result.data.penalty === 'N' ? 'bg-green-500' : 'bg-red-500'
+                                                    }`}></div>
+                                                {result.data.penalty === 'N' ? 'ปกติ' : 'มีโทษ'}
+                                            </span>
+                                        </div>
+                                    </div>
 
-                        {/* ข้อมูลเพิ่มเติม - Tabs */}
-                        {(result.data.customsRegisterBrokerInfo || result.data.customsRegisterEmployeeInfo || result.data.customsRegisterBankAccountInfo) && (
+                                    <div>
+                                        <label className="text-sm font-medium text-gray-500">ประเภทธุรกิจ</label>
+                                        <p className="text-gray-900 mt-1">
+                                            {result.data.personalType === '1' ? 'นิติบุคคล' : 'บุคคลธรรมดา'}
+                                        </p>
+                                    </div>
+
+                                    {result.data.countryBase && (
+                                        <div>
+                                            <label className="text-sm font-medium text-gray-500">ประเทศที่จดทะเบียน</label>
+                                            <p className="text-gray-900 mt-1">
+                                                {result.data.countryBase === 'TH' ? 'ประเทศไทย' : result.data.countryBase}
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    {/* ข้อมูลกรรมการ */}
+                                    {result.data.customsRegisterDirectorInfo && (
+                                        <div className="border-t pt-4">
+                                            <h4 className="font-medium text-gray-900 mb-3 flex items-center">
+                                                <User className="w-4 h-4 mr-1" />
+                                                ข้อมูลกรรมการ
+                                            </h4>
+                                            <div className="bg-gray-50 p-3 rounded-lg">
+                                                <div className="flex items-center">
+                                                    <p className="text-gray-900 font-medium">
+                                                        {result.data.customsRegisterDirectorInfo.preNameDesc} {result.data.customsRegisterDirectorInfo.firstName} {result.data.customsRegisterDirectorInfo.lastName}
+                                                    </p>
+                                                    <CopyButton
+                                                        text={`${result.data.customsRegisterDirectorInfo.preNameDesc} ${result.data.customsRegisterDirectorInfo.firstName} ${result.data.customsRegisterDirectorInfo.lastName}`}
+                                                        fieldName="director"
+                                                    />
+                                                </div>
+                                                {result.data.customsRegisterDirectorInfo.firstNameEnglish && (
+                                                    <p className="text-gray-600 text-sm mt-1">
+                                                        {result.data.customsRegisterDirectorInfo.firstNameEnglish} {result.data.customsRegisterDirectorInfo.lastNameEnglish}
+                                                    </p>
+                                                )}
+                                                {result.data.customsRegisterDirectorInfo.email && (
+                                                    <p className="text-gray-600 text-sm">
+                                                        📧 {result.data.customsRegisterDirectorInfo.email}
+                                                    </p>
+                                                )}
+                                                {result.data.customsRegisterDirectorInfo.phone && (
+                                                    <p className="text-gray-600 text-sm">
+                                                        📞 {result.data.customsRegisterDirectorInfo.phone}
+                                                    </p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* ข้อมูลสถานะการลงทะเบียน */}
+                                    <div className="border-t pt-4">
+                                        <h4 className="font-medium text-gray-900 mb-3">สถานะการลงทะเบียน</h4>
+                                        <div className="space-y-2 text-sm">
+                                            <div className="flex justify-between">
+                                                <span className="text-gray-500">วันที่ลงทะเบียน:</span>
+                                                <span className="text-gray-900">
+                                                    {result.data.registerDate
+                                                        ? new Date(result.data.registerDate.toString().replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')).toLocaleDateString('th-TH')
+                                                        : 'ไม่ระบุ'}
+                                                </span>
+                                            </div>
+                                            {result.data.dateAmend && (
+                                                <div className="flex justify-between">
+                                                    <span className="text-gray-500">วันที่แก้ไขล่าสุด:</span>
+                                                    <span className="text-gray-900">
+                                                        {new Date(result.data.dateAmend.toString().replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')).toLocaleDateString('th-TH')}
+                                                    </span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* ที่อยู่ - แสดงเฉพาะกรณี SUCCESS */}
+                        {result.status === 'SUCCESS' && result.data && (
+                            <div className="mt-6 pt-6 border-t border-gray-200">
+                                <label className="text-sm font-medium text-gray-500 flex items-center mb-2">
+                                    <MapPin className="w-4 h-4 mr-1" />
+                                    ที่อยู่
+                                </label>
+                                <div className="flex items-start">
+                                    <p className="text-gray-900 text-sm leading-relaxed flex-1">
+                                        {[
+                                            result.data.houseNumber,
+                                            result.data.buildingName && `อาคาร${result.data.buildingName}`,
+                                            result.data.mooNumber && `หมู่ ${result.data.mooNumber}`,
+                                            result.data.soiNumber && `ซอย ${result.data.soiNumber}`,
+                                            result.data.streetName && `ถนน ${result.data.streetName}`,
+                                            result.data.tumbolName && `ตำบล ${result.data.tumbolName}`,
+                                            result.data.amphurName && `อำเภอ ${result.data.amphurName}`,
+                                            result.data.provinceName,
+                                            result.data.postCode
+                                        ].filter(Boolean).join(' ')}
+                                    </p>
+                                    <CopyButton
+                                        text={[
+                                            result.data.houseNumber,
+                                            result.data.buildingName && `อาคาร${result.data.buildingName}`,
+                                            result.data.mooNumber && `หมู่ ${result.data.mooNumber}`,
+                                            result.data.soiNumber && `ซอย ${result.data.soiNumber}`,
+                                            result.data.streetName && `ถนน ${result.data.streetName}`,
+                                            result.data.tumbolName && `ตำบล ${result.data.tumbolName}`,
+                                            result.data.amphurName && `อำเภอ ${result.data.amphurName}`,
+                                            result.data.provinceName,
+                                            result.data.postCode
+                                        ].filter(Boolean).join(' ')}
+                                        fieldName="address"
+                                    />
+                                </div>
+                            </div>
+                        )}
+
+                        {/* ข้อมูลเพิ่มเติม - Tabs - แสดงเฉพาะกรณี SUCCESS */}
+                        {result.status === 'SUCCESS' && result.data && (result.data.customsRegisterBrokerInfo || result.data.customsRegisterEmployeeInfo || result.data.customsRegisterBankAccountInfo) && (
                             <div className="mt-6 pt-6 border-t border-gray-200">
                                 <h4 className="font-medium text-gray-900 mb-4">ข้อมูลเพิ่มเติม</h4>
 
@@ -597,17 +726,30 @@ const TaxIdLookup = () => {
                             </div>
                         )}
 
-                        {/* Footer Info */}
-                        <div className="mt-6 pt-4 border-t border-gray-200">
-                            <div className="flex flex-wrap justify-between text-xs text-gray-500 gap-2">
-                                <span>Transaction ID: {result.transactionId || 'N/A'}</span>
-                                <span>Environment: {result.environment || import.meta.env.VITE_APP_ENV}</span>
-                                <span>เวลาที่ค้นหา: {new Date(result.timestamp || new Date()).toLocaleString('th-TH')}</span>
-                                {result.isMockData && (
-                                    <span className="text-orange-600">🧪 ข้อมูลจำลองสำหรับการทดสอบ</span>
-                                )}
+                        {/* Alternative Actions สำหรับกรณี FAIL */}
+                        {result.status === 'FAIL' && (
+                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                                <h4 className="font-medium text-blue-900 mb-3">💼 ลองใช้ข้อมูลตัวอย่างเหล่านี้:</h4>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    {[
+                                        { id: '0105551234567', desc: 'บริษัท ตัวอย่าง จำกัด', status: '✅ ปกติ' },
+                                        { id: '0105559876543', desc: 'บริษัท ทดสอบ จำกัด (มหาชน)', status: '✅ ปกติ' },
+                                        { id: '1111111111111', desc: 'บริษัท ปิดกิจการแล้ว จำกัด', status: '❌ ปิดกิจการ' },
+                                        { id: '0105555555555', desc: 'บริษัท สตาร์ทอัพ เทค จำกัด', status: '✅ ปกติ' }
+                                    ].map((item) => (
+                                        <button
+                                            key={item.id}
+                                            onClick={() => setTaxId(formatTaxId(item.id))}
+                                            className="text-left p-3 hover:bg-blue-100 hover:text-blue-700 transition-colors rounded border border-blue-200 bg-white"
+                                        >
+                                            <div className="font-mono text-sm font-medium text-blue-600">{formatTaxId(item.id)}</div>
+                                            <div className="text-sm text-gray-600 mt-1">{item.desc}</div>
+                                            <div className="text-xs text-gray-500 mt-1">{item.status}</div>
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 )}
             </div>

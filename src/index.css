@@ -1,5 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
 :root {
-  font-family: 'Kanit', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Prompt', sans-serif;
   line-height: 1.5;
   font-weight: 400;
   
@@ -22,7 +23,7 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  font-family: 'Kanit', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Prompt', sans-serif;
 }
 
 #root {
