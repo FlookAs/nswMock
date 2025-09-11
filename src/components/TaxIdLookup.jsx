@@ -282,27 +282,74 @@ const TaxIdLookup = () => {
                     <div className="bg-white rounded-lg shadow-lg p-6">
                         {/* Header สำหรับทั้ง Success และ Fail */}
                         <div className="flex items-center mb-6">
-                            {result.status === 'SUCCESS' ? (
+                            {result.status === 'SUCCESS' && result.data && result.data.status !== 'NOT_FOUND' ? (
                                 <CheckCircle className="w-6 h-6 text-green-500 mr-3" />
+                            ) : result.status === 'SUCCESS' && result.data && result.data.status === 'NOT_FOUND' ? (
+                                <AlertCircle className="w-6 h-6 text-yellow-500 mr-3" />
                             ) : (
                                 <AlertCircle className="w-6 h-6 text-red-500 mr-3" />
                             )}
                             <h3 className="text-2xl font-semibold text-gray-900">
-                                {result.status === 'SUCCESS' ? 'ข้อมูลบริษัท' : 'ผลการค้นหา'}
+                                {result.status === 'SUCCESS' && result.data && result.data.status !== 'NOT_FOUND'
+                                    ? 'ข้อมูลบริษัท'
+                                    : result.status === 'SUCCESS' && result.data && result.data.status === 'NOT_FOUND'
+                                        ? 'ไม่พบข้อมูล'
+                                        : 'ผลการค้นหา'}
                             </h3>
                             {result.isMockData && (
                                 <span className="ml-auto px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium">
                                     🧪 Mock Data
                                 </span>
                             )}
-                            <span className={`ml-2 px-3 py-1 rounded-full text-sm font-medium ${result.status === 'SUCCESS'
-                                ? 'bg-green-100 text-green-800'
-                                : 'bg-red-100 text-red-800'
+                            <span className={`ml-2 px-3 py-1 rounded-full text-sm font-medium ${result.status === 'SUCCESS' && result.data && result.data.status !== 'NOT_FOUND'
+                                    ? 'bg-green-100 text-green-800'
+                                    : result.status === 'SUCCESS' && result.data && result.data.status === 'NOT_FOUND'
+                                        ? 'bg-yellow-100 text-yellow-800'
+                                        : 'bg-red-100 text-red-800'
                                 }`}>
-                                {result.status === 'SUCCESS' ? '✅ สำเร็จ' : '❌ ไม่สำเร็จ'}
+                                {result.status === 'SUCCESS' && result.data && result.data.status !== 'NOT_FOUND'
+                                    ? '✅ สำเร็จ'
+                                    : result.status === 'SUCCESS' && result.data && result.data.status === 'NOT_FOUND'
+                                        ? '⚠️ ไม่พบข้อมูล'
+                                        : '❌ ไม่สำเร็จ'}
                             </span>
                         </div>
+                        {/* แสดง NOT_FOUND Result สำหรับ data.status = NOT_FOUND */}
+                        {result.status === 'SUCCESS' && result.data && result.data.status === 'NOT_FOUND' && (
+                            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-6">
+                                <div className="flex items-start">
+                                    <AlertCircle className="w-5 h-5 text-yellow-500 mr-3 flex-shrink-0 mt-0.5" />
+                                    <div className="flex-1">
+                                        <h4 className="text-lg font-semibold text-yellow-800 mb-2">
+                                            ไม่พบข้อมูลผู้ประกอบการ
+                                        </h4>
 
+                                        <div className="space-y-3 text-sm">
+                                            <div>
+                                                <span className="font-medium text-yellow-700">รหัสนิติบุคคลที่ค้นหา:</span>
+                                                <p className="text-yellow-600 mt-1 font-mono">{result.data.taxNumber}</p>
+                                            </div>
+
+                                            <div>
+                                                <span className="font-medium text-yellow-700">สาเหตุ:</span>
+                                                <p className="text-yellow-600 mt-1">{result.data.message}</p>
+                                            </div>
+                                        </div>
+
+                                        {/* คำแนะนำสำหรับกรณี NOT_FOUND */}
+                                        <div className="mt-4 p-4 bg-yellow-100 rounded-lg border border-yellow-200">
+                                            <h5 className="font-medium text-yellow-800 mb-2">💡 คำแนะนำ:</h5>
+                                            <ul className="text-sm text-yellow-700 space-y-1">
+                                                <li>• ตรวจสอบความถูกต้องของรหัสนิติบุคคลอีกครั้ง</li>
+                                                <li>• บริษัทอาจยังไม่ได้ลงทะเบียนกับกรมศุลกากร</li>
+                                                <li>• บริษัทอาจถูกปิดกิจการหรือเปลี่ยนแปลงข้อมูล</li>
+                                                <li>• ลองใช้รหัสนิติบุคคลตัวอย่างด้านล่าง</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                         {/* แสดง Error Details สำหรับ status FAIL */}
                         {result.status === 'FAIL' && result.error && (
                             <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
@@ -427,7 +474,7 @@ const TaxIdLookup = () => {
                             </div>
                         </div>
                         {/* แสดงข้อมูลบริษัทเฉพาะกรณี SUCCESS */}
-                        {result.status === 'SUCCESS' && result.data && (
+                        {result.status === 'SUCCESS' && result.data.status !== 'NOT_FOUND' && result.data && (
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                                 {/* ข้อมูลหลัก */}
                                 <div className="space-y-6">
@@ -640,7 +687,7 @@ const TaxIdLookup = () => {
                         )}
 
                         {/* ที่อยู่ - แสดงเฉพาะกรณี SUCCESS */}
-                        {result.status === 'SUCCESS' && result.data && (
+                        {result.status === 'SUCCESS' && result.data.status !== 'NOT_FOUND' && result.data && (
                             <div className="mt-6 pt-6 border-t border-gray-200">
                                 <label className="text-sm font-medium text-gray-500 flex items-center mb-2">
                                     <MapPin className="w-4 h-4 mr-1" />
@@ -729,31 +776,6 @@ const TaxIdLookup = () => {
                                         </div>
                                     </div>
                                 )}
-                            </div>
-                        )}
-
-                        {/* Alternative Actions สำหรับกรณี FAIL */}
-                        {result.status === 'FAIL' && (
-                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                                <h4 className="font-medium text-blue-900 mb-3">💼 ลองใช้ข้อมูลตัวอย่างเหล่านี้:</h4>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    {[
-                                        { id: '0105551234567', desc: 'บริษัท ตัวอย่าง จำกัด', status: '✅ ปกติ' },
-                                        { id: '0105559876543', desc: 'บริษัท ทดสอบ จำกัด (มหาชน)', status: '✅ ปกติ' },
-                                        { id: '1111111111111', desc: 'บริษัท ปิดกิจการแล้ว จำกัด', status: '❌ ปิดกิจการ' },
-                                        { id: '0105555555555', desc: 'บริษัท สตาร์ทอัพ เทค จำกัด', status: '✅ ปกติ' }
-                                    ].map((item) => (
-                                        <button
-                                            key={item.id}
-                                            onClick={() => setTaxId(formatTaxId(item.id))}
-                                            className="text-left p-3 hover:bg-blue-100 hover:text-blue-700 transition-colors rounded border border-blue-200 bg-white"
-                                        >
-                                            <div className="font-mono text-sm font-medium text-blue-600">{formatTaxId(item.id)}</div>
-                                            <div className="text-sm text-gray-600 mt-1">{item.desc}</div>
-                                            <div className="text-xs text-gray-500 mt-1">{item.status}</div>
-                                        </button>
-                                    ))}
-                                </div>
                             </div>
                         )}
                     </div>
