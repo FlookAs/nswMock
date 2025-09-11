@@ -17,6 +17,7 @@ import {
     CheckCheck
 } from 'lucide-react';
 import { apiService } from '../services/apiService';
+import Navigation from './Navigation';
 
 const TaxIdLookup = () => {
     const [taxId, setTaxId] = useState('');
@@ -129,11 +130,12 @@ const TaxIdLookup = () => {
     );
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+            <Navigation />
             <div className="max-w-5xl mx-auto">
+
                 {/* Header */}
-                <div className="text-center mb-8">
-                    <Building className="w-20 h-20 mx-auto text-indigo-600 mb-4" />
+                <div className="text-center mt-10 mb-8">
                     <h1 className="text-4xl font-bold text-gray-900 mb-2">
                         ระบบค้นหาข้อมูลนิติบุคคลที่ลงทะเบียนบนระบบกรมศุลกากร
                     </h1>
@@ -143,42 +145,45 @@ const TaxIdLookup = () => {
                 </div>
 
                 {/* Environment Info */}
-                <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-                    <h2 className="text-lg font-semibold mb-4 flex items-center">
-                        <Settings className="w-5 h-5 mr-2" />
-                        Environment Configuration
-                        <span className={`px-3 py-1 rounded-full text-sm font-medium border ml-auto ${currentEnv.color}`}>
-                            {currentEnv.name}
-                        </span>
-                    </h2>
+                {import.meta.env.VITE_APP_ENV === 'development' ? (
+                    <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+                        <h2 className="text-lg font-semibold mb-4 flex items-center">
+                            <Settings className="w-5 h-5 mr-2" />
+                            Environment Configuration
+                            <span className={`px-3 py-1 rounded-full text-sm font-medium border ml-auto ${currentEnv.color}`}>
+                                {currentEnv.name}
+                            </span>
+                        </h2>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                        <div>
-                            <span className="font-medium text-gray-700">API Endpoint:</span>
-                            <p className="text-gray-600 font-mono text-xs mt-1 break-all">{currentEnv.apiUrl}</p>
-                        </div>
-                        <div>
-                            <span className="font-medium text-gray-700">Build Tool:</span>
-                            <p className="text-gray-600 mt-1">Vite ({import.meta.env.MODE})</p>
-                        </div>
-                        <div>
-                            <span className="font-medium text-gray-700">Environment:</span>
-                            <p className="text-gray-600 mt-1">{import.meta.env.VITE_APP_ENV}</p>
-                        </div>
-                        <div>
-                            <span className="font-medium text-gray-700">Debug Mode:</span>
-                            <p className="text-gray-600 mt-1">{currentEnv.debug ? 'Enabled' : 'Disabled'}</p>
-                        </div>
-                        <div>
-                            <span className="font-medium text-gray-700">Timeout:</span>
-                            <p className="text-gray-600 mt-1">{import.meta.env.VITE_API_TIMEOUT}ms</p>
-                        </div>
-                        <div>
-                            <span className="font-medium text-gray-700">Version:</span>
-                            <p className="text-gray-600 mt-1">{import.meta.env.VITE_APP_VERSION}</p>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <span className="font-medium text-gray-700">API Endpoint:</span>
+                                <p className="text-gray-600 font-mono text-xs mt-1 break-all">{currentEnv.apiUrl}</p>
+                            </div>
+                            <div>
+                                <span className="font-medium text-gray-700">Build Tool:</span>
+                                <p className="text-gray-600 mt-1">Vite ({import.meta.env.MODE})</p>
+                            </div>
+                            <div>
+                                <span className="font-medium text-gray-700">Environment:</span>
+                                <p className="text-gray-600 mt-1">{import.meta.env.VITE_APP_ENV}</p>
+                            </div>
+                            <div>
+                                <span className="font-medium text-gray-700">Debug Mode:</span>
+                                <p className="text-gray-600 mt-1">{currentEnv.debug ? 'Enabled' : 'Disabled'}</p>
+                            </div>
+                            <div>
+                                <span className="font-medium text-gray-700">Timeout:</span>
+                                <p className="text-gray-600 mt-1">{import.meta.env.VITE_API_TIMEOUT}ms</p>
+                            </div>
+                            <div>
+                                <span className="font-medium text-gray-700">Version:</span>
+                                <p className="text-gray-600 mt-1">{import.meta.env.VITE_APP_VERSION}</p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                ) : null}
+
 
                 {/* Search Form */}
                 <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
@@ -217,6 +222,7 @@ const TaxIdLookup = () => {
                                         { id: '012-34-56789-12-3', desc: '200 OK' },
                                         { id: '999-99-99999-99-9', desc: '400 Error' },
                                         { id: '888-88-88888-88-8', desc: '401 Error' },
+                                        { id: '126-48-47618-68-7', desc: 'No taxID' },
                                     ].map((item) => (
                                         <button
                                             key={item.id}
@@ -290,8 +296,8 @@ const TaxIdLookup = () => {
                                 </span>
                             )}
                             <span className={`ml-2 px-3 py-1 rounded-full text-sm font-medium ${result.status === 'SUCCESS'
-                                    ? 'bg-green-100 text-green-800'
-                                    : 'bg-red-100 text-red-800'
+                                ? 'bg-green-100 text-green-800'
+                                : 'bg-red-100 text-red-800'
                                 }`}>
                                 {result.status === 'SUCCESS' ? '✅ สำเร็จ' : '❌ ไม่สำเร็จ'}
                             </span>
@@ -306,13 +312,13 @@ const TaxIdLookup = () => {
                                         <h4 className="text-lg font-semibold text-red-800 mb-2">
                                             {result.error.title || 'เกิดข้อผิดพลาด'}
                                         </h4>
-                                        
+
                                         <div className="space-y-3 text-sm">
                                             <div>
                                                 <span className="font-medium text-red-700">ข้อความ (ไทย):</span>
                                                 <p className="text-red-600 mt-1">{result.messageTH || 'ทำรายการไม่สำเร็จ'}</p>
                                             </div>
-                                            
+
                                             <div>
                                                 <span className="font-medium text-red-700">ข้อความ (English):</span>
                                                 <p className="text-red-600 mt-1">{result.messageEN || 'Transaction Failed'}</p>
@@ -545,8 +551,8 @@ const TaxIdLookup = () => {
                                         <label className="text-sm font-medium text-gray-500">สถานะ</label>
                                         <div className="mt-1">
                                             <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${result.data.penalty === 'N'
-                                                    ? 'bg-green-100 text-green-800'
-                                                    : 'bg-red-100 text-red-800'
+                                                ? 'bg-green-100 text-green-800'
+                                                : 'bg-red-100 text-red-800'
                                                 }`}>
                                                 <div className={`w-2 h-2 rounded-full mr-2 ${result.data.penalty === 'N' ? 'bg-green-500' : 'bg-red-500'
                                                     }`}></div>
