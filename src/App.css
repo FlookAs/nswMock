@@ -1,21 +1,23 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+@import 'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css';
+
+.App {
+  text-align: left;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+/* NSW-inspired color scheme */
+:root {
+  --nsw-orange: #FF9500;
+  --nsw-green: #00A651;
+  --nsw-blue: #0EA5E9;
+  --nsw-gray: #2D2D2D;
+  --nsw-light-gray: #F7F8FA;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+
+/* Vite-specific optimizations */
+@media (prefers-reduced-motion: no-preference) {
+  .logo {
+    animation: logo-spin infinite 20s linear;
+  }
 }
 
 @keyframes logo-spin {
@@ -27,16 +29,150 @@
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+/* Enhanced mobile responsiveness for Vite */
+@media (max-width: 768px) {
+  .grid-cols-1.md\\:grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+  
+  .grid-cols-1.md\\:grid-cols-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-cols-1.lg\\:grid-cols-4 {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-.card {
-  padding: 2em;
+@media (max-width: 480px) {
+  .grid-cols-1.lg\\:grid-cols-4 {
+    grid-template-columns: 1fr;
+  }
 }
 
-.read-the-docs {
-  color: #888;
+/* NSW-style gradient backgrounds */
+.bg-gradient-to-br {
+  background: linear-gradient(135deg, #F7F8FA 0%, #E5E7EB 100%);
+  background-attachment: fixed;
+}
+
+/* NSW-style button gradients */
+.bg-gradient-to-r.from-orange-500 {
+  background: linear-gradient(90deg, var(--nsw-orange) 0%, #FF8C00 100%);
+  box-shadow: 0 4px 15px rgba(255, 149, 0, 0.3);
+}
+
+.bg-gradient-to-r.from-orange-500:hover {
+  background: linear-gradient(90deg, #FF8C00 0%, #FF7700 100%);
+  box-shadow: 0 6px 20px rgba(255, 149, 0, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Loading animation enhancement */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Smooth transitions optimized for Vite's fast refresh */
+* {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Focus styles with NSW colors */
+input:focus,
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.2);
+}
+
+/* Custom scrollbar with NSW colors */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--nsw-light-gray);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--nsw-orange);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #FF8C00;
+}
+
+/* Copy button animations with NSW style */
+.copy-success {
+  animation: copySuccess 0.3s ease-in-out;
+  color: var(--nsw-green) !important;
+}
+
+@keyframes copySuccess {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Form validation styles with NSW colors */
+.border-red-300 {
+  animation: shake 0.5s ease-in-out;
+  border-color: #FCA5A5 !important;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* Loading spinner enhancement */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Status indicator animations with NSW colors */
+.status-indicator {
+  animation: statusPulse 2s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* NSW-style card hover effects */
+.bg-white:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* NSW-style rounded corners */
+.rounded-xl {
+  border-radius: 12px;
+}
+
+/* Enhanced shadows for NSW look */
+.shadow-lg {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05);
 }
