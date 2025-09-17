@@ -1,0 +1,28 @@
+{
+  "name": "nsw-frontend-callback-server",
+  "version": "1.0.0",
+  "description": "Express server for receiving NSW API callbacks directly to frontend",
+  "main": "callback-server.js",
+  "scripts": {
+    "start": "node callback-server.js",
+    "dev": "nodemon callback-server.js",
+    "test": "node test-callback.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "nsw",
+    "callback",
+    "webhook",
+    "express",
+    "websocket"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}

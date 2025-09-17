@@ -1,12 +1,25 @@
 import { useState } from 'react'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import TaxIdLookup from './components/TaxIdLookup'
+import FrontendCallbackReceiver from './components/FrontendCallbackReceiver'
 import './App.css'
 
 function App() {
   return (
-    <div className="App">
-      <TaxIdLookup />
-    </div>
+    <Router>
+      <div className="App">
+        <Routes>
+          {/* Default route - Tax ID Lookup */}
+          <Route path="/" element={<TaxIdLookup />} />
+          
+          {/* NSW Callback Handler */}
+          <Route path="/nsw-callback" element={<FrontendCallbackReceiver  />} />
+          
+          {/* Redirect any unknown routes to home */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </div>
+    </Router>
   )
 }
 
