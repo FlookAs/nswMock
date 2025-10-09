@@ -7,19 +7,13 @@ import './App.css'
 
 function App() {
   return (
-    <Router>
+    <Router basename={import.meta.env.BASE_URL}>
       <div className="App">
         <Routes>
-          {/* Default route - Tax ID Lookup */}
           <Route path="/TaxIdLookup" element={<TaxIdLookup />} />
-          
-          {/* NSW Callback Handler */}
-          <Route path="/nsw-callback" element={<FrontendCallbackReceiver  />} />
-          
-          {/* Redirect any unknown routes to home */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-
+          <Route path="/nsw-callback" element={<FrontendCallbackReceiver />} />
           <Route path="/" element={<ApiTesterGet />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
     </Router>
