@@ -19,7 +19,7 @@ function App() {
           {/* Redirect any unknown routes to home */}
           <Route path="*" element={<Navigate to="/" replace />} />
 
-          <Route path="/getApi" element={<ApiTesterGet />} />
+          <Route path="/" element={<ApiTesterGet />} />
         </Routes>
       </div>
     </Router>

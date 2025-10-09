@@ -9,13 +9,6 @@ const Navigation = () => {
     // Navigation items
     const navigationItems = [
         { 
-            id: 'search', 
-            label: 'ค้นหาข้อมูล', 
-            icon: Search, 
-            path: '/',
-            description: 'ค้นหาข้อมูลบริษัท'
-        },
-        { 
             id: 'callback', 
             label: 'NSW Callback', 
             icon: Webhook, 
@@ -53,7 +46,7 @@ const Navigation = () => {
                                 NSW Mock System
                             </h1>
                             <p className="text-sm text-gray-600">
-                                ระบบค้นหาข้อมูลนิติบุคคลกรมศุลกากร
+                                API Connect
                             </p>
                         </div>
                     </Link>
