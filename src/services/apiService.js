@@ -48,7 +48,7 @@ export const apiService = {
   async getCompanyByTaxId(taxId) {
     try {
       const response = await apiClient.get(
-        `/dc85609a-a8e7-4076-b0a6-f3cf4bd005ec/customs/entities/${taxId}`
+        `/customs/entities/${taxId}`
       );
       return {
         ...response.data,

@@ -49,6 +49,6 @@ export default defineConfig(({ command, mode }) => {
     
     // Environment variables prefix
     envPrefix: 'VITE_',
-    base: mode === 'production' ? '/nswMock/' : '/',
+    base: mode === 'production' ? '/nsw_mock/' : '/',
   }
 })

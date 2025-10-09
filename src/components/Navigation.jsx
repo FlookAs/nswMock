@@ -45,7 +45,7 @@ const Navigation = () => {
                     {/* Logo และชื่อระบบ */}
                     <Link to="/" className="flex items-center space-x-4 hover:opacity-80 transition-opacity">
                         <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-orange-500 to-yellow-600 rounded-lg flex items-center justify-center">
-                            <Building className="w-6 h-6 text-white" />
+                            <img src="/images.jpg" alt="Logo" className="w-6 h-6" />
                         </div>
 
                         <div className="hidden md:block">
