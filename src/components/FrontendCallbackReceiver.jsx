@@ -6,7 +6,11 @@ const FrontendCallbackReceiver = () => {
     const [selectedCallback, setSelectedCallback] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [connectionStatus, setConnectionStatus] = useState('disconnected');
-    const [serverUrl, setServerUrl] = useState('ws://localhost:3001');
+    
+    // ⭐ ใช้ environment variable แทน hardcode
+    const defaultServerUrl = import.meta.env.VITE_CALLBACK_WS_URL || 'ws://localhost:3001';
+    const [serverUrl, setServerUrl] = useState(defaultServerUrl);
+    
     const [isAutoScroll, setIsAutoScroll] = useState(true);
     const [filter, setFilter] = useState('all');
     const wsRef = useRef(null);
@@ -19,13 +23,15 @@ const FrontendCallbackReceiver = () => {
             wsRef.current = new WebSocket(wsUrl);
             
             wsRef.current.onopen = () => {
-                console.log('Connected to callback server');
+                console.log('✅ Connected to callback server:', wsUrl);
                 setConnectionStatus('connected');
             };
 
             wsRef.current.onmessage = (event) => {
                 try {
                     const message = JSON.parse(event.data);
+                    console.log('📨 Received message:', message);
+                    
                     if (message.type === 'nsw_callback') {
                         const newCallback = {
                             ...message.payload,
@@ -38,23 +44,24 @@ const FrontendCallbackReceiver = () => {
                         };
                         
                         setCallbacks(prev => [newCallback, ...prev].slice(0, 100));
+                        console.log('✅ Callback added to list');
                     }
                 } catch (error) {
-                    console.error('Error parsing WebSocket message:', error);
+                    console.error('❌ Error parsing WebSocket message:', error);
                 }
             };
 
             wsRef.current.onclose = () => {
-                console.log('WebSocket connection closed');
+                console.log('❌ WebSocket connection closed');
                 setConnectionStatus('disconnected');
             };
 
             wsRef.current.onerror = (error) => {
-                console.error('WebSocket error:', error);
+                console.error('❌ WebSocket error:', error);
                 setConnectionStatus('error');
             };
         } catch (error) {
-            console.error('Failed to connect WebSocket:', error);
+            console.error('❌ Failed to connect WebSocket:', error);
             setConnectionStatus('error');
         }
     };
@@ -67,6 +74,7 @@ const FrontendCallbackReceiver = () => {
         }
     };
 
+    // Auto cleanup on unmount
     useEffect(() => {
         return () => {
             if (wsRef.current) {
@@ -75,6 +83,7 @@ const FrontendCallbackReceiver = () => {
         };
     }, []);
 
+    // Auto scroll
     useEffect(() => {
         if (isAutoScroll && callbacksEndRef.current) {
             callbacksEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -178,6 +187,20 @@ const FrontendCallbackReceiver = () => {
                     <p className="text-gray-600 text-sm mt-1">
                         Real-time monitoring และแสดง status code ของ NSW API responses
                     </p>
+                    
+                    {/* ⭐ แสดง environment info */}
+                    <div className="mt-2 flex items-center space-x-4 text-xs">
+                        <span className={`px-2 py-1 rounded ${
+                            import.meta.env.VITE_APP_ENV === 'production' 
+                                ? 'bg-red-100 text-red-700' 
+                                : 'bg-blue-100 text-blue-700'
+                        }`}>
+                            ENV: {import.meta.env.VITE_APP_ENV || 'development'}
+                        </span>
+                        <span className="text-gray-500">
+                            Default WS: {defaultServerUrl}
+                        </span>
+                    </div>
                 </div>
             </div>
 
@@ -201,7 +224,7 @@ const FrontendCallbackReceiver = () => {
                                 type="text"
                                 value={serverUrl}
                                 onChange={(e) => setServerUrl(e.target.value)}
-                                placeholder="ws://localhost:3001"
+                                placeholder="ws://localhost:3001 or wss://your-server.com"
                                 className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                             />
                             <button
@@ -225,6 +248,15 @@ const FrontendCallbackReceiver = () => {
                                 )}
                             </button>
                         </div>
+                        
+                        {/* ⭐ แสดงคำแนะนำสำหรับ production */}
+                        {import.meta.env.VITE_APP_ENV === 'production' && (
+                            <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+                                <p className="text-sm text-yellow-800">
+                                    💡 <strong>Production Mode:</strong> Make sure your callback server is accessible via HTTPS/WSS
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </div>
 
