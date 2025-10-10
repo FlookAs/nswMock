@@ -206,10 +206,10 @@ const ApiTesterGet = () => {
                 <div className="text-center mb-8">
                     <h1 className="text-4xl font-bold text-gray-900 mb-2 flex items-center justify-center">
                         <Code className="w-10 h-10 mr-3 text-orange-600" />
-                        API Tester
+                        API Tester (GET)
                     </h1>
                     <p className="text-gray-600 text-lg">
-                        ทดสอบเรียก API พร้อม Path และ Query Parameters
+                        ทดสอบเรียก API Method GET พร้อม Path และ Query Parameters
                     </p>
                 </div>
 
