@@ -15,6 +15,27 @@ const Navigation = () => {
             path: '/nsw-callback',
             description: 'รับ callback จาก NSW API'
         },
+        {
+            id: 'post-tester',
+            label: 'API Tester (POST)',
+            icon: Activity,
+            path: '/test-post',
+            description: 'ทดสอบ API ด้วย POST'
+        },
+        {
+            id: 'get-tester',
+            label: 'API Tester (GET)',
+            icon: Activity,
+            path: '/',
+            description: 'ทดสอบ API ด้วย GET'
+        },
+        {
+            id: 'delete-tester',
+            label: 'API Tester (DELETE)',
+            icon: Activity,
+            path: '/test-delete',
+            description: 'ทดสอบ API ด้วย DELETE'
+        }
     ];
 
     const toggleMobileMenu = () => {

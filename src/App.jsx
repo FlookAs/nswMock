@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import TaxIdLookup from './components/TaxIdLookup'
 import FrontendCallbackReceiver from './components/FrontendCallbackReceiver'
 import ApiTesterGet from './components/ApiTesterGet'
+import ApiTesterPost from './components/ApiTesterPost'
+import ApiTesterDelete from './components/ApiTesterDelete'
 import './App.css'
 
 function App() {
@@ -13,6 +15,8 @@ function App() {
           <Route path="/TaxIdLookup" element={<TaxIdLookup />} />
           <Route path="/nsw-callback" element={<FrontendCallbackReceiver />} />
           <Route path="/" element={<ApiTesterGet />} />
+          <Route path="/test-post" element={<ApiTesterPost />} />
+          <Route path="/test-delete" element={<ApiTesterDelete />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
