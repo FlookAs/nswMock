@@ -39,8 +39,113 @@ const ApiTesterPost = () => {
             description: 'ตรวจสอบสถานะความคืบหน้าคำขอ',
             pathParams: ['document_id'],
             requestBodyExample: {
-                requestDate: "2024-10-10",
-                additionalInfo: "ตรวจสอบสถานะ"
+                message_header: {
+                    message_info: {
+                        message_id: "550e8400-e29b-41d4-a716-446655440000",
+                        ref_to_message_id: "550e8400-e29b-41d4-a716-446655440001",
+                        timestamp: "2025-10-15T10:30:00Z"
+                    },
+                    party_info: {
+                        from: {
+                            party_id: "SENDER001",
+                            role: "EXPORTER"
+                        },
+                        to: {
+                            party_id: "RECV001",
+                            role: "CUSTOMS"
+                        }
+                    },
+                    collaboration_info: {
+                        conversation_id: "550e8400-e29b-41d4-a716-446655440002",
+                        service: "submitPermitDocumentToNSW",
+                        action: "REQUEST"
+                    },
+                    business_info: {
+                        single_form_reference: "SF2025001",
+                        document_id: "AAAA123456789",
+                        document_type: "DFT-R04-CER"
+                    }
+                },
+                payload: {
+                    content_type: "application/json",
+                    data: {
+                        document_id: "AAAA123456789",
+                        document_number: "DOC2025001",
+                        document_type: "DFT-R04-CER",
+                        response_code: "AC001",
+                        rejected_items: [
+                            {
+                                item_number: "1",
+                                reasons: [
+                                    {
+                                        reason_code: "ERR001",
+                                        description: "ข้อมูลไม่ครบถ้วน"
+                                    }
+                                ]
+                            }
+                        ],
+                        payment_request: {
+                            payment_reference: "PAY2025001",
+                            payment_reference_numbers: [
+                                {
+                                    name: "ref1",
+                                    value: "REF2025001"
+                                },
+                                {
+                                    name: "ref2",
+                                    value: "REF2025002"
+                                }
+                            ],
+                            payment_channel: "QR_CODE",
+                            payment_due_date: "2025-11-15",
+                            amount: 1500.00,
+                            currency_code: "THB",
+                            qr_code: {
+                                format: "BANK-QR",
+                                payload: "00020101021129370016A000000677010111011300660000000005802TH530376454041500.005802TH6304ABCD",
+                                display_text: "สแกนเพื่อชำระเงิน"
+                            },
+                            payee: {
+                                agency_code: "DFT001",
+                                agency_name: "กรมการค้าต่างประเทศ",
+                                bank_code: 14,
+                                comp_code: "1234"
+                            },
+                            remark: "กรุณาชำระภายใน 30 วัน"
+                        },
+                        attachments: [
+                            {
+                                attachment_id: "ATT001",
+                                file_name: "certificate.pdf",
+                                file_type: "application/pdf",
+                                file_size: 102400,
+                                file_content: "base64EncodedContent=="
+                            }
+                        ]
+                    }
+                },
+                payload_security_info: {
+                    integrity: {
+                        alg: "SHA256",
+                        hash_value: "47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU="
+                    },
+                    signature: {
+                        alg: "RS256",
+                        signature_value: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9",
+                        key_info: {
+                            key_id: "sender-key-2025"
+                        }
+                    },
+                    encryption: {
+                        alg: "RSA-OAEP",
+                        enc: "A256GCM",
+                        key_info: {
+                            key_id: "receiver-key-2025"
+                        },
+                        original_content_type: "application/json"
+                    }
+                },
+                callback_url: "https://webhook.site/efe10a8b-ec08-4cef-9cf2-3f9493601efb"
             }
         },
         {
@@ -50,9 +155,113 @@ const ApiTesterPost = () => {
             description: 'ดึงเอกสารใบอนุญาต',
             pathParams: ['requestId'],
             requestBodyExample: {
-                documentFormat: "PDF",
-                language: "TH",
-                includeAttachments: true
+                message_header: {
+                    message_info: {
+                        message_id: "550e8400-e29b-41d4-a716-446655440000",
+                        ref_to_message_id: "550e8400-e29b-41d4-a716-446655440001",
+                        timestamp: "2025-10-15T10:30:00Z"
+                    },
+                    party_info: {
+                        from: {
+                            party_id: "SENDER001",
+                            role: "EXPORTER"
+                        },
+                        to: {
+                            party_id: "RECV001",
+                            role: "CUSTOMS"
+                        }
+                    },
+                    collaboration_info: {
+                        conversation_id: "550e8400-e29b-41d4-a716-446655440002",
+                        service: "submitPermitDocumentToNSW",
+                        action: "REQUEST"
+                    },
+                    business_info: {
+                        single_form_reference: "SF2025001",
+                        document_id: "AAAA123456789",
+                        document_type: "DFT-R04-CER"
+                    }
+                },
+                payload: {
+                    content_type: "application/json",
+                    data: {
+                        document_id: "AAAA123456789",
+                        document_number: "DOC2025001",
+                        document_type: "DFT-R04-CER",
+                        response_code: "AC001",
+                        rejected_items: [
+                            {
+                                item_number: "1",
+                                reasons: [
+                                    {
+                                        reason_code: "ERR001",
+                                        description: "ข้อมูลไม่ครบถ้วน"
+                                    }
+                                ]
+                            }
+                        ],
+                        payment_request: {
+                            payment_reference: "PAY2025001",
+                            payment_reference_numbers: [
+                                {
+                                    name: "ref1",
+                                    value: "REF2025001"
+                                },
+                                {
+                                    name: "ref2",
+                                    value: "REF2025002"
+                                }
+                            ],
+                            payment_channel: "QR_CODE",
+                            payment_due_date: "2025-11-15",
+                            amount: 1500.00,
+                            currency_code: "THB",
+                            qr_code: {
+                                format: "BANK-QR",
+                                payload: "00020101021129370016A000000677010111011300660000000005802TH530376454041500.005802TH6304ABCD",
+                                display_text: "สแกนเพื่อชำระเงิน"
+                            },
+                            payee: {
+                                agency_code: "DFT001",
+                                agency_name: "กรมการค้าต่างประเทศ",
+                                bank_code: 14,
+                                comp_code: "1234"
+                            },
+                            remark: "กรุณาชำระภายใน 30 วัน"
+                        },
+                        attachments: [
+                            {
+                                attachment_id: "ATT001",
+                                file_name: "certificate.pdf",
+                                file_type: "application/pdf",
+                                file_size: 102400,
+                                file_content: "base64EncodedContent=="
+                            }
+                        ]
+                    }
+                },
+                payload_security_info: {
+                    integrity: {
+                        alg: "SHA256",
+                        hash_value: "47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU="
+                    },
+                    signature: {
+                        alg: "RS256",
+                        signature_value: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9",
+                        key_info: {
+                            key_id: "sender-key-2025"
+                        }
+                    },
+                    encryption: {
+                        alg: "RSA-OAEP",
+                        enc: "A256GCM",
+                        key_info: {
+                            key_id: "receiver-key-2025"
+                        },
+                        original_content_type: "application/json"
+                    }
+                },
+                callback_url: "https://webhook.site/efe10a8b-ec08-4cef-9cf2-3f9493601efb"
             }
         },
         {
