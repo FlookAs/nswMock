@@ -19,7 +19,7 @@ const ApiTesterDelete = () => {
         {
             id: 'dft002',
             name: '(DFT002) - cancelEformToDFT',
-            baseUrl: `${apiBaseUrl}/dft/requests/{document_id}`,
+            baseUrl: `${apiBaseUrl}/dft/request/{document_id}`,
             description: 'ยกเลิกคำขอใบอนุญาต',
             pathParams: ['document_id'],
             requestBodyExample: {
@@ -115,7 +115,7 @@ const ApiTesterDelete = () => {
                         original_content_type: "application/json"
                     }
                 },
-                callbackUrl: "https://webhook.site/efe10a8b-ec08-4cef-9cf2-3f9493601efb"
+                callback_url: "https://webhook.site/efe10a8b-ec08-4cef-9cf2-3f9493601efb"
             }
         },
     ];

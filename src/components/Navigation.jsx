@@ -16,13 +16,6 @@ const Navigation = () => {
             description: 'รับ callback จาก NSW API'
         },
         {
-            id: 'post-tester',
-            label: 'API Tester (POST)',
-            icon: Activity,
-            path: '/test-post',
-            description: 'ทดสอบ API ด้วย POST'
-        },
-        {
             id: 'get-tester',
             label: 'API Tester (GET)',
             icon: Activity,
@@ -30,11 +23,25 @@ const Navigation = () => {
             description: 'ทดสอบ API ด้วย GET'
         },
         {
+            id: 'post-tester',
+            label: 'API Tester (POST)',
+            icon: Activity,
+            path: '/test-post',
+            description: 'ทดสอบ API ด้วย POST'
+        },
+        {
             id: 'delete-tester',
             label: 'API Tester (DELETE)',
             icon: Activity,
             path: '/test-delete',
             description: 'ทดสอบ API ด้วย DELETE'
+        },
+        {
+            id: 'cus001',
+            label: 'CUS001 Lookup',
+            icon: Activity,
+            path: '/TaxIdLookup',
+            description: 'CUS001'
         }
     ];
 
