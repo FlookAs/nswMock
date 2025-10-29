@@ -18,25 +18,25 @@ const ApiTesterGet = () => {
         {
             id: 'cargo-movement',
             name: '(NSW-CAR002) - Cargo E-Lock Movement',
-            baseUrl: `${apiBaseUrl}/nsw/cargo/elock/{nswRefId}/movement`,
+            baseUrl: `${apiBaseUrl}/nsw/cargo/{version}/elock/{nswRefId}/movement`,
             description: 'ตรวจสอบการเคลื่อนย้าย E-Lock',
-            pathParams: ['nswRefId'],
+            pathParams: ['version', 'nswRefId'],
             exampleParams: { nswRefId: 'NSW123456' }
         },
         {
             id: 'entity-by-tax',
             name: '(CUS001) - Get Entity by Tax ID',
-            baseUrl: `${apiBaseUrl}/customs/entities/{taxId}`,
+            baseUrl: `${apiBaseUrl}/customs/{version}/entities/{taxId}`,
             description: 'ข้อมูลนิติบุคคลจากเลขประจำตัวผู้เสียภาษี',
-            pathParams: ['taxId'],
+            pathParams: ['version', 'taxId'],
             exampleParams: { taxId: '0123456789012' }
         },
         {
             id: 'containers',
             name: '(CUS002) - Get Containers',
-            baseUrl: `${apiBaseUrl}/customs/containers`,
+            baseUrl: `${apiBaseUrl}/customs/{version}/containers`,
             description: 'ค้นหาตู้คอนเทนเนอร์',
-            pathParams: [],
+            pathParams: ['version'],
             queryParamFields: [
                 { name: 'containerNo', label: 'Container Number', example: 'ABCU1234567' },
                 { name: 'declarationNo', label: 'Declaration Number', example: 'DEC2024001' }
@@ -45,35 +45,35 @@ const ApiTesterGet = () => {
         {
             id: 'declaration',
             name: '(CUS003) - Get Declaration',
-            baseUrl: `${apiBaseUrl}/customs/declarations/{declarationNo}`,
+            baseUrl: `${apiBaseUrl}/customs/{version}/transitDeclarations`,
             description: 'ข้อมูลใบขนสินค้า',
-            pathParams: ['declarationNo'],
-            exampleParams: { declarationNo: 'DEC2024001' }
+            pathParams: ['version'],
+            exampleParams: {}
         },
         {
             id: 'vehicle',
             name: '(DLT001) - Get Vehicle',
-            baseUrl: `${apiBaseUrl}/dlt/vehicles/{licensePlate}`,
+            baseUrl: `${apiBaseUrl}/dlt/{version}/vehicles/{licensePlate}`,
             description: 'ข้อมูลยานพาหนะ',
-            pathParams: ['licensePlate'],
+            pathParams: ['version', 'licensePlate'],
             exampleParams: { licensePlate: 'กก-1234' }
         },
         {
             id: 'driver-license',
             name: '(DLT002) - Driver License Status',
-            baseUrl: `${apiBaseUrl}/dlt/drivers/licenses/{licenseNumber}/status`,
+            baseUrl: `${apiBaseUrl}/dlt/{version}/drivers/licenses/{driverLicenseNumber}/status`,
             description: 'สถานะใบขับขี่',
-            pathParams: ['licenseNumber'],
-            exampleParams: { licenseNumber: '12345678' }
+            pathParams: ['version', 'driverLicenseNumber'],
+            exampleParams: { driverLicenseNumber: '12345678' }
         },
-        // {
-        //     id: 'entity-by-juristic',
-        //     name: '(DBD001) - Get Entity by Juristic ID',
-        //     baseUrl: `${apiBaseUrl}/dbd/entities/{organizationJuristicId}`,
-        //     description: 'ข้อมูลนิติบุคคลจากเลขทะเบียนนิติบุคคล',
-        //     pathParams: ['organizationJuristicId'],
-        //     exampleParams: { organizationJuristicId: '0105123456789' }
-        // }
+        {
+            id: 'entity-by-juristic',
+            name: '(DBD001) - Get Entity by Juristic ID',
+            baseUrl: `${apiBaseUrl}/dbd/{version}/entities/{organizationJuristicId}`,
+            description: 'ข้อมูลนิติบุคคลจากเลขทะเบียนนิติบุคคล',
+            pathParams: ['version' ,'organizationJuristicId'],
+            exampleParams: { organizationJuristicId: '0105123456789' }
+        }
     ];
 
     const handleEndpointChange = (endpointId) => {

@@ -19,9 +19,9 @@ const ApiTesterDelete = () => {
         {
             id: 'dft002',
             name: '(DFT002) - cancelEformToDFT',
-            baseUrl: `${apiBaseUrl}/dft/request/{document_id}`,
+            baseUrl: `${apiBaseUrl}/dft/{version}/e-form/{document_id}`,
             description: 'ยกเลิกคำขอใบอนุญาต',
-            pathParams: ['document_id'],
+            pathParams: ['version', 'document_id'],
             requestBodyExample: {
                 message_header: {
                     message_info: {

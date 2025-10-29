@@ -20,9 +20,9 @@ const ApiTesterPost = () => {
         {
             id: 'nsw-car001',
             name: '(NSW-CAR001) - Upload Reference Document',
-            baseUrl: `${apiBaseUrl}/nsw/cargo/elock/{nswRefId}/referenceDocument`,
+            baseUrl: `${apiBaseUrl}/nsw/cargo/{version}/elock/{nswRefId}/referenceDocument`,
             description: 'อัพโหลดเอกสารอ้างอิง E-Lock',
-            pathParams: ['nswRefId'],
+            pathParams: ['version' ,'nswRefId'],
             requestBodyExample: {
                 xxx: "INVOICE",
                 yyy: "INV2024001",
@@ -30,11 +30,11 @@ const ApiTesterPost = () => {
             }
         },
         {
-            id: 'nsw-sss001',
-            name: '(NSW-SSS001) - Get Request Progress',
-            baseUrl: `${apiBaseUrl}/nsw/sss/requests/{document_id}/progress`,
+            id: 'nsw-tss001',
+            name: '(NSW-TSS001) - Get Request Progress',
+            baseUrl: `${apiBaseUrl}/nsw/tss/{version}/e-form/{document_id}/progress`,
             description: 'ตรวจสอบสถานะความคืบหน้าคำขอ',
-            pathParams: ['document_id'],
+            pathParams: ['version' ,'document_id'],
             requestBodyExample: {
                 message_header: {
                     message_info: {
@@ -146,11 +146,11 @@ const ApiTesterPost = () => {
             }
         },
         {
-            id: 'nsw-sss002',
-            name: '(NSW-SSS002) - Get Permit Document',
-            baseUrl: `${apiBaseUrl}/nsw/sss/requests/{requestId}/permit-document`,
+            id: 'nsw-tss002',
+            name: '(NSW-tSS002) - Get Permit Document',
+            baseUrl: `${apiBaseUrl}/nsw/tss/{version}/e-form/{document_id}/permit-document`,
             description: 'ดึงเอกสารใบอนุญาต',
-            pathParams: ['requestId'],
+            pathParams: ['version', 'document_id'],
             requestBodyExample: {
                 message_header: {
                     message_info: {
@@ -264,9 +264,9 @@ const ApiTesterPost = () => {
         {
             id: 'cus004',
             name: '(CUS004) - Record E-Lock Installation',
-            baseUrl: `${apiBaseUrl}/customs/elock/{nswRefId}/installations`,
+            baseUrl: `${apiBaseUrl}/customs/{version}/elock/{nswRefId}/installations`,
             description: 'บันทึกการติดตั้ง E-Lock',
-            pathParams: ['nswRefId'],
+            pathParams: ['version', 'nswRefId'],
             requestBodyExample: {
                 containerNo: "CMAU1234567",
                 transitDeclarationNo: "TD123456789",
@@ -277,9 +277,9 @@ const ApiTesterPost = () => {
         {
             id: 'cus005',
             name: '(CUS005) - Send E-Lock Alert',
-            baseUrl: `${apiBaseUrl}/customs/elock/{nswRefId}/alerts`,
+            baseUrl: `${apiBaseUrl}/customs/{version}/elock/{nswRefId}/alerts`,
             description: 'ส่งการแจ้งเตือนจาก E-Lock',
-            pathParams: ['nswRefId'],
+            pathParams: ['version' ,'nswRefId'],
             requestBodyExample: {
                 trackingNo: "TRX202509050001",
                 alert: {
@@ -330,9 +330,9 @@ const ApiTesterPost = () => {
         {
             id: 'cus006',
             name: '(CUS006) - Request E-Lock Unlock',
-            baseUrl: `${apiBaseUrl}/customs/elock/{nswRefId}/unlock`,
+            baseUrl: `${apiBaseUrl}/customs/{version}/elock/{nswRefId}/unlock`,
             description: 'ขอปลดล็อค E-Lock',
-            pathParams: ['nswRefId'],
+            pathParams: ['version', 'nswRefId'],
             requestBodyExample: {
                 trackingNo: "TRX202509050001",
                 callback_url: "https://webhook.site/efe10a8b-ec08-4cef-9cf2-3f9493601efb"
@@ -341,9 +341,9 @@ const ApiTesterPost = () => {
         {
             id: 'dft001',
             name: '(DFT001) - Create New Request',
-            baseUrl: `${apiBaseUrl}/dft/requests`,
+            baseUrl: `${apiBaseUrl}/dft/{version}/e-form`,
             description: 'สร้างคำขอใหม่',
-            pathParams: [],
+            pathParams: ['version'],
             requestBodyExample: {
                 // ส่วน Header ของข้อความสำหรับ NSW (M = Mandatory)
                 message_header: {
@@ -592,9 +592,9 @@ const ApiTesterPost = () => {
         {
             id: 'eb001',
             name: '(EB001) - EBMS API',
-            baseUrl: `${apiBaseUrl}/api/ebms`,
+            baseUrl: `${apiBaseUrl}/nsw/ebgateway/{version}/ebms`,
             description: 'EBMS API',
-            // pathParams: ['nswRefId'],
+            pathParams: ['version'],
             requestBodyExample: {
                 callback_url: "https://webhook.site/efe10a8b-ec08-4cef-9cf2-3f9493601efb",
                 data: {
@@ -613,8 +613,9 @@ const ApiTesterPost = () => {
         {
             id: 'eb002',
             name: '(EB002) - EBMS CALLBACK API',
-            baseUrl: `${apiBaseUrl}/api/ebms/callback`,
+            baseUrl: `${apiBaseUrl}/api/nsw/ebgateway/{version}/ebms/callback`,
             description: 'EBMS CALLBACK API',
+            pathParams: ['version'],
             requestBodyExample: {
                 callback_url: "https://webhook.site/efe10a8b-ec08-4cef-9cf2-3f9493601efb",
                 msg_id: "MSG20241014153044001",
